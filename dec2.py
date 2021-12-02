@@ -1,5 +1,5 @@
 from typing import Callable, Dict, List, Tuple
-import functools
+from functools import reduce
 
 # --- Day 2: Dive! ---
 #
@@ -85,27 +85,27 @@ p2 = {
 }
 
 
-def exec(
-    program: List[str],
+def interpreter(
     cmdset: Dict[str, Callable[[Dict[str, int], int], Dict[str, int]]],
-    initialstate: Dict[str, int],
-) -> Dict[str, int]:
+    init: Dict[str, int],
+):
     def move(state: Dict[str, int], cmd: Tuple[str, str]):
         return cmdset[cmd[0]](state, int(cmd[1])) if cmd[0] in cmdset else state
 
-    return functools.reduce(
-        lambda acc, el: move(acc, tuple(el.split(" "))), program, initialstate
-    )
+    def exec(prog: List[str]) -> Dict[str, int]:
+        return reduce(lambda state, cmd: move(state, tuple(cmd.split(" "))), prog, init)
+
+    return exec
 
 
 if __name__ == "__main__":
     with open("dec2_test.txt") as f:
         prog = [line.strip() for line in f.readlines()]
-        print("testp1:", exec(prog, p1, {"x": 0, "d": 0}))
-        print("testp2:", exec(prog, p2, {"x": 0, "d": 0, "aim": 0}))
+        print("testp1:", interpreter(p1, {"x": 0, "d": 0})(prog))
+        print("testp2:", interpreter(p2, {"x": 0, "d": 0, "aim": 0})(prog))
     with open("dec2_data.txt") as f:
         prog = [line.strip() for line in f.readlines()]
-        result = exec(prog, p1, {"x": 0, "d": 0})
+        result = interpreter(p1, {"x": 0, "d": 0})(prog)
         print("    p1:", result, "->", result["d"] * result["x"])
-        result = exec(prog, p2, {"x": 0, "d": 0, "aim": 0})
+        result = interpreter(p2, {"x": 0, "d": 0, "aim": 0})(prog)
         print("    p2:", result, "->", result["d"] * result["x"])
