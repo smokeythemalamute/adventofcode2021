@@ -90,7 +90,7 @@ def exec(
     cmdset: Dict[str, Callable[[Dict[str, int], int], Dict[str, int]]],
     initialstate: Dict[str, int],
 ) -> Dict[str, int]:
-    def move(state: Tuple[int, int], cmd: Tuple[str, str]):
+    def move(state: Dict[str, int], cmd: Tuple[str, str]):
         return cmdset[cmd[0]](state, int(cmd[1])) if cmd[0] in cmdset else state
 
     return functools.reduce(
