@@ -121,11 +121,8 @@ def conv(input: List[int], window: List[int]) -> List[int]:
 
 
 if __name__ == "__main__":
-    with open("dec1_test.txt") as f:
-        input = [int(line) for line in f.readlines()]
-        print(f"ex 1: {sum(fn(input))}")
-        print(f"ex 2: {sum(fn(conv(input, [1, 1, 1])))}")
-    with open("dec1_data.txt") as f:
-        input = [int(line) for line in f.readlines()]
-        print(f"ans1: {sum(fn(input))}")
-        print(f"ans2: {sum(fn(conv(input, [1, 1, 1])))}")
+    for filename in ["dec1_test.txt", "dec1_data.txt"]:
+        with open(filename) as f:
+            input = [int(line) for line in f.readlines()]
+            print(filename, "1:", sum(fn(input)))
+            print(filename, "2:", sum(fn(conv(input, [1, 1, 1]))))

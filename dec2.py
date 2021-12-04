@@ -99,13 +99,8 @@ def interpreter(
 
 
 if __name__ == "__main__":
-    with open("dec2_test.txt") as f:
-        prog = [line.strip() for line in f.readlines()]
-        print("testp1:", interpreter(p1, {"x": 0, "d": 0})(prog))
-        print("testp2:", interpreter(p2, {"x": 0, "d": 0, "aim": 0})(prog))
-    with open("dec2_data.txt") as f:
-        prog = [line.strip() for line in f.readlines()]
-        result = interpreter(p1, {"x": 0, "d": 0})(prog)
-        print("    p1:", result, "->", result["d"] * result["x"])
-        result = interpreter(p2, {"x": 0, "d": 0, "aim": 0})(prog)
-        print("    p2:", result, "->", result["d"] * result["x"])
+    for filename in ["dec2_test.txt", "dec2_data.txt"]:
+        with open(filename) as f:
+            prog = [line.strip() for line in f.readlines()]
+            print(filename, "p1:", interpreter(p1, {"x": 0, "d": 0})(prog))
+            print(filename, "p2:", interpreter(p2, {"x": 0, "d": 0, "aim": 0})(prog))

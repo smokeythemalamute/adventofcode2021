@@ -117,13 +117,13 @@ def invert(s: str) -> str:
 def run_diag(input: List[str], f: Callable[[List[int], int], List[str]]) -> List[str]:
     width = len(input[0])
     threshold = len(input) / 2
-    count = [sum([1 if b[i] == "1" else 0 for b in input]) for i in range(width)]
-    return f(count, threshold)
+    bitcount = [sum([1 if b[i] == "1" else 0 for b in input]) for i in range(width)]
+    return f(bitcount, threshold)
 
 
 def gamma_epsilon(input: List[str]) -> str:
-    def fn(count: List[int], thres: int):
-        return ["".join(["1" if x > thres else "0" for x in count])]
+    def fn(bitcount: List[int], thres: int):
+        return ["".join(["1" if x > thres else "0" for x in bitcount])]
 
     return run_diag(input, fn)[0]
 
@@ -133,11 +133,11 @@ def life_support(input: List[str], pick: Tuple[str, str]) -> str:
     l = input
     pos = 0
 
-    def fn(count: List[int], thres: int):
+    def fn(bitcount: List[int], thres: int):
         return list(
             filter(
                 lambda x: x[pos] == pick[0]
-                if count[pos] >= thres
+                if bitcount[pos] >= thres
                 else x[pos] == pick[1],
                 l,
             )
@@ -151,28 +151,24 @@ def life_support(input: List[str], pick: Tuple[str, str]) -> str:
     return l[0]
 
 
-def run(filename: str):
-    with open(filename) as f:
-        input = [l.strip() for l in f.readlines()]
-
-        ge = gamma_epsilon(input)
-        (gamma, epsilon) = (int(ge, 2), int(invert(ge), 2))
-        og_unit = int(life_support(input, ("1", "0")), 2)
-        co2_scrub = int(life_support(input, ("0", "1")), 2)
-        print(
-            filename,
-            ":",
-            {
-                "gamma": gamma,
-                "epsilon": epsilon,
-                "gamma_epsilon": gamma * epsilon,
-                "og_unit": og_unit,
-                "co2_scrub": co2_scrub,
-                "life_support_rating": og_unit * co2_scrub,
-            },
-        )
-
-
 if __name__ == "__main__":
-    run("dec3_test.txt")
-    run("dec3_data.txt")
+    for filename in ["dec3_test.txt", "dec3_data.txt"]:
+        with open(filename) as f:
+            input = [l.strip() for l in f.readlines()]
+
+            ge = gamma_epsilon(input)
+            (gamma, epsilon) = (int(ge, 2), int(invert(ge), 2))
+            og_unit = int(life_support(input, ("1", "0")), 2)
+            co2_scrub = int(life_support(input, ("0", "1")), 2)
+            print(
+                filename,
+                ":",
+                {
+                    "gamma": gamma,
+                    "epsilon": epsilon,
+                    "gamma_epsilon": gamma * epsilon,
+                    "og_unit": og_unit,
+                    "co2_scrub": co2_scrub,
+                    "life_support_rating": og_unit * co2_scrub,
+                },
+            )
