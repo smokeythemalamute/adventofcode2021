@@ -123,9 +123,9 @@ def run_diag(input: List[str], f: Callable[[List[int], int], List[str]]) -> List
 
 def gamma_epsilon(input: List[str]) -> str:
     def fn(count: List[int], thres: int):
-        return "".join(["1" if x > thres else "0" for x in count])
+        return ["".join(["1" if x > thres else "0" for x in count])]
 
-    return run_diag(input, fn)
+    return run_diag(input, fn)[0]
 
 
 def life_support(input: List[str], pick: Tuple[str, str]) -> str:
