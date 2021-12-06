@@ -81,11 +81,12 @@
 import time
 from collections import defaultdict
 from functools import reduce
+from typing import List
 
 if __name__ == "__main__":
     for filename in ["dec6_test.txt", "dec6_data.txt"]:
 
-        def run_for(days: int) -> int:
+        def lanternfish(days: int) -> int:
             with open(filename) as f:
                 # HISTOGRAM approach
                 # Load everything into a dict for speed!
@@ -94,22 +95,22 @@ if __name__ == "__main__":
                     dict[int(el)] += 1
 
                 start_time = time.perf_counter()
-                for day in range(days):
-                    max_key = reduce(max, dict.keys())
+                yield sum(dict.values())
+
+                for _ in range(days):
                     births = dict[0]
                     # Shift Left
-                    for i in range(1, max_key + 1):
-                        dict[i - 1] = dict[i]
-                    # Clear out the last value
-                    dict[max_key] = 0
+                    for i in range(0, 8):
+                        dict[i] = dict[i + 1]
                     # Reset counter
                     dict[6] += births
                     # New births
-                    dict[8] += births
-                result = sum(dict.values())
+                    dict[8] = births
+                    yield sum(dict.values())
+
                 end_time = time.perf_counter()
                 print("Took", (end_time - start_time) * 1000, "ms")
-                return result
 
-        print(filename, ": After  80 days : total", run_for(80))
-        print(filename, ": After 256 days : total", run_for(256))
+        results = list(lanternfish(256))
+        print(filename, ": After  80 days : total", results[80])
+        print(filename, ": After 256 days : total", results[256])
