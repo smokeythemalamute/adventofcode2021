@@ -86,19 +86,23 @@
 # escape route! How much fuel must they spend to align to that
 # position?
 
-
+import time
 from typing import Callable, Dict, List
 from collections import Counter
 
 
 def fuel_cost(input: List[int], cost_fn: Callable[[int, int], int]) -> Dict[int, int]:
+    start_time = time.perf_counter()
     maxval, minval = max(input), min(input)
     # Histrogram to save doing the same calculation
     hist = sum([Counter({x: 1}) for x in input], Counter())
-    return {
+    result = {
         dest: sum([cost_fn(loc, dest) * amt for loc, amt in hist.items()])
         for dest in range(minval, maxval + 1)
     }
+    end_time = time.perf_counter()
+    print("Took", (end_time - start_time) * 1000, "ms")
+    return result
 
 
 def cost_const(curr: int, dest: int) -> int:
@@ -122,6 +126,6 @@ if __name__ == "__main__":
     for filename in ["dec7_test.txt", "dec7_data.txt"]:
         with open(filename) as f:
             input = list(map(int, f.readline().strip().split(",")))
-            cost_p1, cost_p2 = [fuel_cost(input, m) for m in [cost_const, cost_lin]]
-            print(filename, ": part1 : min cost =", min(cost_p1.values()))
-            print(filename, ": part2 : min cost =", min(cost_p2.values()))
+        p1, p2 = [min(fuel_cost(input, m).values()) for m in [cost_const, cost_lin]]
+        print(filename, ": part1 : =", p1)
+        print(filename, ": part2 : =", p2)
