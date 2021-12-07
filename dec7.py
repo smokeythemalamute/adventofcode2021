@@ -89,17 +89,13 @@
 
 from typing import Callable, Dict, List
 from functools import reduce
-from collections import defaultdict
+from collections import Counter
 
 
 def fuel_cost(input: List[int], cost_fn: Callable[[int, int], int]) -> Dict[int, int]:
-    maxval, minval = reduce(max, input), reduce(min, input)
-
+    maxval, minval = max(input), min(input)
     # Histrogram to save doing the same calculation
-    hist = defaultdict(int)
-    for i in input:
-        hist[i] += 1
-
+    hist = sum([Counter({x: 1}) for x in input], Counter())
     return {
         dest: sum([cost_fn(loc, dest) * amt for loc, amt in hist.items()])
         for dest in range(minval, maxval + 1)
@@ -128,5 +124,5 @@ if __name__ == "__main__":
         with open(filename) as f:
             input = list(map(int, f.readline().strip().split(",")))
             cost_p1, cost_p2 = [fuel_cost(input, m) for m in [cost_const, cost_lin]]
-            print(filename, ": part1 : min cost =", reduce(min, cost_p1.values()))
-            print(filename, ": part2 : min cost =", reduce(min, cost_p2.values()))
+            print(filename, ": part1 : min cost =", min(cost_p1.values()))
+            print(filename, ": part2 : min cost =", min(cost_p2.values()))
